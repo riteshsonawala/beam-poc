@@ -25,15 +25,17 @@ public class ConvertCsvToParquet extends DoFn<CSVRecord, GenericRecord> {
 
         for (Schema.Field field : fields) {
             String fieldType = field.schema().getType().getName().toLowerCase();
+            String fieldName=field.name();
+            String value=element.get(fieldName.replaceAll("_", " "));
             switch (fieldType) {
                 case "string":
-                    genericRecord.put(field.name(), element.get(field.name().toUpperCase()));
+                    genericRecord.put(fieldName, value);
                     break;
                 case "int":
-                    genericRecord.put(field.name(), Integer.valueOf(element.get(field.name().toUpperCase())));
+                    genericRecord.put(fieldName, Integer.valueOf(value));
                     break;
                 case "long":
-                    genericRecord.put(field.name(), Long.valueOf(element.get(field.name().toUpperCase())));
+                    genericRecord.put(fieldName, Long.valueOf(value));
                     break;
                 default:
                     throw new IllegalArgumentException("Field type " + fieldType + " is not supported.");
