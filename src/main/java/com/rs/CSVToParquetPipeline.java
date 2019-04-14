@@ -28,7 +28,7 @@ public class CSVToParquetPipeline {
         pipeline.apply(FileIO.match().filepattern(options.getInputFile()))
                 .apply(FileIO.readMatches())
                 .apply(ParDo.of(new CsvParser()))
-                .apply("Convert CSV to parquet", ParDo.of(new ConvertCsvToParquet(schema.toString()))) //PCollection<GenericRecord>
+                .apply(ParDo.of(new ConvertCsvToParquet(schema.toString())))
                 .setCoder(AvroCoder.of(GenericRecord.class, schema)) //PCollection<GenericRecord>
                 .apply(FileIO.<GenericRecord>write().via(ParquetIO.sink(schema)).to(options.getOutputPath()).withSuffix(".parquet"));
 
